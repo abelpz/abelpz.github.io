@@ -4,11 +4,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Derivación - EDL 1.0.0</title>	
-	<link rel="stylesheet" type="text/css" href="lib/icons/flaticon.css"> 
+	<title>Derivación - EDL 1.0.0</title>
+	<link rel="stylesheet" type="text/css" href="lib/icons/flaticon.css">
 	<link rel="stylesheet" href="lib/mathquill/mathquill.css"/>
 	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="style-dark.css">	
+	<link rel="stylesheet" href="style-dark.css">
 </head>
 <body>
 <div class="instrucciones">
@@ -32,7 +32,9 @@
 			<div class="derivacion">
 				<div class="hipotesis iniciales">
 					<div class="premisa">
-						<div class="fila">1</div>
+						<div class="fila">
+							<span class="fila-label">1</span> 
+						</div>
 						<span  class="proposicion" data-fila="1"></span>
 						<span class="justificacion">H</span>
 					</div>
@@ -124,6 +126,7 @@
 var MQ = MathQuill.getInterface(2);
 </script>
 <script>
+	var appVersion = '1.0.3';
 	var fileName = 'derivacion-'+ (Date.now() % 100000);
 	var LastRowCreated = 1;
 	var premisasIniciales = false;
@@ -140,9 +143,12 @@ var MQ = MathQuill.getInterface(2);
 	var memory = [{'contenedor' : contenedor.innerHTML, 'premisasIniciales' : premisasIniciales}];
 	var cursor = 0;
 
+	var desarrollo = contenedor.getElementsByClassName('desarrollo');
+		desarrollo[0].setAttribute('data-version', appVersion);
+
 	var botonClaro = document.getElementById('claro');
 	var botonOscuro = document.getElementById('oscuro');
-	
+
 	document.styleSheets[3].disabled = true;
 
 	botonOscuro.addEventListener('click', (e)=>{
@@ -159,11 +165,25 @@ var MQ = MathQuill.getInterface(2);
 		document.styleSheets[3].disabled = true;
 	});
 
-	changeTitle(fileName);
+	//Eliminar Linea
+	contenedor.addEventListener('click', (e) => {
+		var row = null;
+		if (e.path[0].getAttribute('class') == 'deleteRow'){
+			filaLabel = e.path[0].previousElementSibling;
+			if (filaLabel && filaLabel.getAttribute('class') == 'fila-label'){
+				row = filaLabel.textContent;
+			}else{
+				row = e.path[0].parentElement.nextSibling.getAttribute('data-fila');
+			}
+			if(row) deleteRow(row);
+		};
+	})
+
+	changeTitle(fileName, appVersion);
 
 	function saveToMemory(){
 		if(canSave)
-		{	
+		{
 			canSave = false;
 			setTimeout(()=>
 			{
@@ -177,24 +197,24 @@ var MQ = MathQuill.getInterface(2);
 					var latex = proposicionField[fila].latex();
 					item.setAttribute('class','proposicion');
 					item.innerHTML = latex;
-				});		
+				});
 
 				let justificaciones = clone.querySelectorAll('.justificacion').forEach( (item,i)=>{
 					var latex = justificacionField[i].latex();
 					item.setAttribute('class','justificacion');
 					item.innerHTML = latex;
-				});	
+				});
 
 				let latex = conclusionField.latex();
-				let conclusion = clone.querySelector('.conclusion');			
+				let conclusion = clone.querySelector('.conclusion');
 					conclusion.setAttribute('class','conclusion');
 					conclusion.innerHTML = latex;
 				memory.push({'contenedor' : clone.innerHTML, 'premisasIniciales' : premisasIniciales});
 				cursor++;
 				console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
 				canSave = true;
-			}, 300);		
-		}	
+			}, 300);
+		}
 	}
 
 	function undo(){
@@ -207,7 +227,7 @@ var MQ = MathQuill.getInterface(2);
 			setFields();
 			setJustificaciones();
 			setConclusion();
-		}		
+		}
 	}
 
 	function redo(){
@@ -220,7 +240,7 @@ var MQ = MathQuill.getInterface(2);
 			setFields();
 			setJustificaciones();
 			setConclusion();
-		}	
+		}
 	}
 
 	function setConclusion(){
@@ -247,20 +267,61 @@ var MQ = MathQuill.getInterface(2);
 				selectedBox.focus();
 				canDelete = (selectedBox.latex() == '') ? true : false;
 			});
-		});		
+		});
 		LastRowCreated = proposicionField.length-1;
+		console.log(LastRowCreated);
 		selectedBox = proposicionField[LastRowCreated];
 		selectedBox.focus();
-	}setFields();
+	}
+	setFields();
+
+	function deleteRow(row){
+		
+		row = parseInt(row);
+
+		let premise = document.querySelector('[data-fila*="' + row + '"]').parentElement;
+
+		if(premise){
+			premise.classList.add('slide-out-blurred-top');
+			setTimeout(()=>{
+				premise.remove()
+				//Chequear si queda solo una fila para eliminar la opcion de borrar:
+				filas = document.querySelectorAll('.deleteRow');
+				if(filas.length == 1) filas[0].remove();
+				nextProposition = document.querySelector('[data-fila*="' + (row+1) + '"]');
+		
+				while(nextProposition){				
+					row++;
+					currentProposition = nextProposition;
+					nextProposition = document.querySelector('[data-fila*="' + row + '"]');
+
+					var fila = currentProposition.previousSibling;
+					var filaLabel = fila.querySelector('.fila-label');
+
+					currentProposition.setAttribute('data-fila', row-2);
+					if (filaLabel) filaLabel.textContent = row-2;
+					console.log(currentProposition.parentElement);
+				}
+				setFields();
+				setJustificaciones();
+				saveToMemory();
+
+			}, 450);			
+		}		
+		
+		
+	}
 
 	function deleteLastRow(){
 		document.querySelector('.derivacion').setAttribute('class','derivacion');
-
+		
 		let lastPremise = document.querySelectorAll('.proposicion')[LastRowCreated-1].parentElement;
 
 		let previousSibling = lastPremise.previousElementSibling;
 
 		let parentElement = lastPremise.parentElement;
+
+
 
 		if(parentElement.getAttribute('class') == 'hipotesis')
 		{
@@ -277,15 +338,17 @@ var MQ = MathQuill.getInterface(2);
 				premisasIniciales = false;
 			}
 			lastPremise.remove();
-		}			
+		}
 		setFields();
 		setJustificaciones();
 		saveToMemory();
+		filas = document.querySelectorAll('.deleteRow');
+		if(filas.length == 1) filas[0].remove();
 	}
-	
+
 	function setButtons(){
 		var buttons = document.querySelectorAll('.macro').forEach( (item,i)=>{
-			var button = item.getAttribute('data-shortcut');	
+			var button = item.getAttribute('data-shortcut');
 			buttonField[button] = MQ.StaticMath(item);
 		});
 	}
@@ -305,12 +368,30 @@ var MQ = MathQuill.getInterface(2);
 	}
 	setJustificaciones();
 
+	function crearDeleteSpan(){
+		var deleteSpan = document.createElement('span');
+			deleteSpan.setAttribute('class', 'deleteRow');
+			deleteSpan.textContent = 'x';
+
+		return deleteSpan;
+	}
 
 	function crearPremisa(j = ''){
-		var filaSpan = document.createElement('span');
+
+		if(LastRowCreated == 1){
+			addDelete(true);
+		}
+		var deleteSpan = crearDeleteSpan();
+
+		var filaLabel = document.createElement('span');
+			filaLabel.setAttribute('class', 'fila-label');
+			filaLabel.textContent = LastRowCreated+1;
+
+		var filaSpan = document.createElement('div');
 			filaSpan.setAttribute('class', 'fila');
-			filaSpan.textContent = LastRowCreated+1;
-			
+			filaSpan.appendChild(deleteSpan);
+			filaSpan.appendChild(filaLabel);
+
 		var proposicionSpan = document.createElement('span')
 			proposicionSpan.setAttribute('class', 'proposicion');
 			proposicionSpan.setAttribute('data-fila',LastRowCreated+1);
@@ -326,7 +407,7 @@ var MQ = MathQuill.getInterface(2);
 			premisa.appendChild(justificacionSpan);
 
 		saveToMemory();
-		
+
 		return premisa;
 	}
 
@@ -337,7 +418,7 @@ var MQ = MathQuill.getInterface(2);
 		}else{
 			var hipotesis = document.querySelectorAll('.hipotesis');
 				hipotesis[hipotesis.length-1].appendChild(crearPremisa('H'));
-		}		
+		}
 		setFields();
 		setJustificaciones();
 		proposicionField[LastRowCreated].focus();
@@ -372,7 +453,7 @@ var MQ = MathQuill.getInterface(2);
 		}else{
 			ultimaDerivacion.appendChild(derivacion);
 		}
-		saveToMemory();	
+		saveToMemory();
 		añadirHipotesis();
 	};
 
@@ -381,7 +462,7 @@ var MQ = MathQuill.getInterface(2);
 			derivaciones[derivaciones.length-1].setAttribute('class', 'derivacion cerrada');
 		añadirPremisa();
 	}
-	
+
 	function añadirHipotesis(){
 		var hipotesis = document.querySelectorAll('.hipotesis');
 			hipotesis[hipotesis.length-1].appendChild(crearPremisa('H'));
@@ -393,7 +474,7 @@ var MQ = MathQuill.getInterface(2);
 
 	function cerrarPremisasIniciales(){
 		premisasIniciales = true;
-		var derivaciones = document.querySelectorAll('.derivacion:not(.cerrada)');			
+		var derivaciones = document.querySelectorAll('.derivacion:not(.cerrada)');
 			derivaciones[derivaciones.length-1].appendChild(crearPremisa());
 		setFields();
 		setJustificaciones();
@@ -409,10 +490,10 @@ var MQ = MathQuill.getInterface(2);
 
 	document.onkeydown = (e) => {
 
-		var key = parseInt(e.key); 
+		var key = parseInt(e.key);
 
 		if(e.keyCode == 13){
-			añadirPremisa();			
+			añadirPremisa();
 		}
 
 		if (proposicionField[LastRowCreated] == selectedBox && selectedBox.latex() == "") {
@@ -425,7 +506,7 @@ var MQ = MathQuill.getInterface(2);
 				}
 			}else{
 				canDelete = false;
-			}			
+			}
 		}
 
 		if (e.keyCode == 8 || e.keyCode == 46){
@@ -434,10 +515,10 @@ var MQ = MathQuill.getInterface(2);
 
 		if(e.ctrlKey){
 			if (e.keyCode == 90){
-				undo();	
+				undo();
 			}
 			if (e.keyCode == 89){
-				redo();	
+				redo();
 			}
 			if (e.keyCode == 86 || e.keyCode == 88){
 				saveToMemory();
@@ -451,7 +532,7 @@ var MQ = MathQuill.getInterface(2);
 				selectedBox.focus();
 			}
 			if (e.keyCode == 67){
-				cerrarPremisasIniciales();	
+				cerrarPremisasIniciales();
 			}
 			if (e.keyCode == 83){
 				añadirSubderivacion();
@@ -473,7 +554,7 @@ var MQ = MathQuill.getInterface(2);
 			selectedBox.write(item.getAttribute('data-macro'));
 			selectedBox.focus();
 		});
-	});	
+	});
 
 	var acciones = document.querySelectorAll('.btn.accion').forEach((item,i)=>{
 		item.addEventListener('click', () => {
@@ -481,8 +562,8 @@ var MQ = MathQuill.getInterface(2);
 		});
 	});
 
-	function changeTitle(title){
-		document.title = title + " - EDL 1.0.0";
+	function changeTitle(title, version){
+		document.title = title + " - EDL " + version;
 	}
 
 	function download() {
@@ -493,16 +574,16 @@ var MQ = MathQuill.getInterface(2);
 			var latex = proposicionField[fila].latex();
 			item.setAttribute('class','proposicion');
 			item.innerHTML = latex;
-		});		
+		});
 
 		let justificaciones = clone.querySelectorAll('.justificacion').forEach( (item,i)=>{
 			var latex = justificacionField[i].latex();
 			item.setAttribute('class','justificacion');
 			item.innerHTML = latex;
-		});	
+		});
 
 		let latex = conclusionField.latex();
-		let conclusion = clone.querySelector('.conclusion');			
+		let conclusion = clone.querySelector('.conclusion');
 			conclusion.setAttribute('class','conclusion');
 			conclusion.innerHTML = latex;
 
@@ -511,15 +592,15 @@ var MQ = MathQuill.getInterface(2);
 	        window.navigator.msSaveOrOpenBlob(file, fileName + '.dv');
 	    else { // Others
 	    	let url = URL.createObjectURL(file);
-	        let a = document.createElement("a");	        
+	        let a = document.createElement("a");
 	        	a.href = url;
 	        	a.download = fileName + '.dv';
 		        document.body.appendChild(a);
 		        a.click();
 		        setTimeout(function() {
 		            document.body.removeChild(a);
-		            window.URL.revokeObjectURL(url);  
-		        }, 0); 
+		            window.URL.revokeObjectURL(url);
+		        }, 0);
 	    }
 	}
 	function open(){
@@ -527,18 +608,36 @@ var MQ = MathQuill.getInterface(2);
     		abrirInput.click();
   		}
 	}
+
+	function addDelete(addFirst){
+		var filas = document.querySelectorAll(".fila")
+		if ((filas.length > 1) || addFirst){
+			filas.forEach( (fila, i) => {
+				var deleteSpan = crearDeleteSpan();
+				fila.appendChild(deleteSpan);
+			});
+		}
+	}
+
 	function handleFile(file){
 		var reader = new FileReader();
    		reader.readAsText(file[0], "UTF-8");
-   		reader.onload = function (e) {
-   			changeTitle(file[0].name.split('.')[0]);
+   		reader.onload = function (e) { 			
 	        contenedor.innerHTML = e.target.result;
 	        premisasIniciales = (document.querySelectorAll('.hipotesis')[0].nextElementSibling) ? true : false;
 	        setFields();
 			setJustificaciones();
 			setConclusion();
+			addDelete();
 			saveToMemory();
-	    }
+			var desarrollo = contenedor.getElementsByClassName('desarrollo');
+				console.log(desarrollo[0]);
+				var fileAppVersion = desarrollo[0].getAttribute('data-version');
+				if(fileAppVersion != appVersion){ 
+					alert('Este arcivo fue creado en una versión anterior de EDL esto podría generar conflictos en la ejecución de la aplicación. Si esto ocurre, use una versión anterior de EDL para abrir el archivo.');
+				}
+			changeTitle(file[0].name.split('.')[0], (fileAppVersion) ? fileAppVersion : '1.0.x');
+		}
 	    reader.onerror = function (e) {
 	        alert("Error leyendo el archivo");
 	    }
