@@ -4,11 +4,11 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Derivación - EDL 1.0.0</title>	
-	<link rel="stylesheet" type="text/css" href="lib/icons/flaticon.css"> 
+	<title>Derivación - EDL 1.0.3</title>
+	<link rel="stylesheet" type="text/css" href="lib/icons/flaticon.css">
 	<link rel="stylesheet" href="lib/mathquill/mathquill.css"/>
 	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="style-dark.css">	
+	<link rel="stylesheet" href="style-dark.css">
 </head>
 <body>
 <div class="instrucciones">
@@ -32,7 +32,9 @@
 			<div class="derivacion">
 				<div class="hipotesis iniciales">
 					<div class="premisa">
-						<div class="fila">1</div>
+						<div class="fila">
+							<span class="fila-label">1</span> 
+						</div>
 						<span  class="proposicion" data-fila="1"></span>
 						<span class="justificacion">H</span>
 					</div>
@@ -103,10 +105,10 @@
 				<span class="shorcut-label">d</span>
 				<span class="titulo" >Cerrar Subderivacion</span>
 			</button>
-			<button class="btn accion" data-shortcut="d" data-function="deleteLastRow">
+			<!-- <button class="btn accion" data-shortcut="d" data-function="deleteLastRow">
 				<span class="shorcut-label">e</span>
 				<span class="titulo" >Eliminar ultima linea</span>
-			</button>
+			</button> -->
 			<button class="btn accion file" id="save" data-shortcut="" data-function="download">
 				<span class="titulo" ><i class="flaticon-save"></i></span>
 			</button>
@@ -120,11 +122,15 @@
 <input type="file" id="archivo" accept=".xml,.dv" style="display:none" onchange="handleFile(this.files)">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="lib/mathquill/mathquill.js"></script>
+<script src="lib/testing/testing.js"></script>
 <script>
 var MQ = MathQuill.getInterface(2);
 </script>
 <script>
+
+	var appVersion = '1.0.3';
 	var fileName = 'derivacion-'+ (Date.now() % 100000);
+	var LastRow = 1;
 	var LastRowCreated = 1;
 	var premisasIniciales = false;
 	var proposicionField = [];
@@ -133,17 +139,29 @@ var MQ = MathQuill.getInterface(2);
 	var conclusionField;
 	var abrirInput = document.getElementById("archivo");
 	var selectedBox;
+	var selectedRow = 1;
 	var canDelete = false;
 	var canSave = true;
 	var contenedor = document.querySelector('.contenedor');
 
-	var memory = [{'contenedor' : contenedor.innerHTML, 'premisasIniciales' : premisasIniciales}];
+	var memory = [{'contenedor' : contenedor.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow}];
 	var cursor = 0;
+
+	var desarrollo = contenedor.getElementsByClassName('desarrollo');
+		desarrollo[0].setAttribute('data-version', appVersion);
 
 	var botonClaro = document.getElementById('claro');
 	var botonOscuro = document.getElementById('oscuro');
-	
+
 	document.styleSheets[3].disabled = true;
+
+	function getCurrentPremise(){
+		return document.querySelector('[data-fila*="' + selectedRow + '"]').parentElement;		
+	}
+
+	function getPremise(row){
+		return document.querySelector('[data-fila*="' + row + '"]').parentElement;
+	}
 
 	botonOscuro.addEventListener('click', (e)=>{
 		e.preventDefault();
@@ -159,11 +177,20 @@ var MQ = MathQuill.getInterface(2);
 		document.styleSheets[3].disabled = true;
 	});
 
-	changeTitle(fileName);
+	//Eliminar Linea
+	contenedor.addEventListener('click', (e) => {
+		var row = null;
+		if (e.path[0].getAttribute('class') == 'deleteRow'){
+			
+		};
+	})
+
+	changeTitle(fileName, appVersion);
 
 	function saveToMemory(){
+		functionTitle("saveToMemory");
 		if(canSave)
-		{	
+		{
 			canSave = false;
 			setTimeout(()=>
 			{
@@ -177,50 +204,66 @@ var MQ = MathQuill.getInterface(2);
 					var latex = proposicionField[fila].latex();
 					item.setAttribute('class','proposicion');
 					item.innerHTML = latex;
-				});		
+				});
 
 				let justificaciones = clone.querySelectorAll('.justificacion').forEach( (item,i)=>{
 					var latex = justificacionField[i].latex();
 					item.setAttribute('class','justificacion');
 					item.innerHTML = latex;
-				});	
+				});
 
 				let latex = conclusionField.latex();
-				let conclusion = clone.querySelector('.conclusion');			
+				let conclusion = clone.querySelector('.conclusion');
 					conclusion.setAttribute('class','conclusion');
 					conclusion.innerHTML = latex;
-				memory.push({'contenedor' : clone.innerHTML, 'premisasIniciales' : premisasIniciales});
+				memory.push({'contenedor' : clone.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow});
 				cursor++;
-				console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
+				if(testingMode) console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
 				canSave = true;
-			}, 300);		
-		}	
+			}, 300);
+		}
 	}
 
 	function undo(){
+		functionTitle("undo");
 		if(cursor > 0)
 		{
 			cursor--;
 			contenedor.innerHTML = memory[cursor].contenedor;
 			premisasIniciales = memory[cursor].premisasIniciales;
-			console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
-			setFields();
+			selectedRow = memory[cursor].selectedRow;
+			if(testingMode) console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
+			setFields(true);
 			setJustificaciones();
 			setConclusion();
-		}		
+			var deleteButtons = document.querySelectorAll(".deleteRow")
+			if (deleteButtons){
+				deleteButtons.forEach( (deleteSpan, i) => {
+					deleteSpan.addEventListener("click", onClickDeleteSpan);
+				});
+			}
+		}
 	}
 
 	function redo(){
+		functionTitle("redo");
 		if(cursor < parseInt(memory.length-1))
 		{
 			cursor++;
 			contenedor.innerHTML = memory[cursor].contenedor;
 			premisasIniciales =  memory[cursor].premisasIniciales;
-			console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
-			setFields();
+			selectedRow = memory[cursor].selectedRow;
+			if(testingMode) console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
+			setFields(true);
 			setJustificaciones();
 			setConclusion();
-		}	
+			var deleteButtons = document.querySelectorAll(".deleteRow")
+			if (deleteButtons){
+				deleteButtons.forEach( (deleteSpan, i) => {
+					deleteSpan.addEventListener("click", onClickDeleteSpan);
+				});
+			}
+		}
 	}
 
 	function setConclusion(){
@@ -230,11 +273,13 @@ var MQ = MathQuill.getInterface(2);
 		});
 		conclusion.addEventListener('click', () => {
 			selectedBox = conclusionField;
+			selectedRow = LastRow;
 		});
 	}
 	setConclusion();
 
-	function setFields(){
+	function setFields(setListeners = false){
+		functionTitle("setFields");
 		proposicionField = [];
 		var proposiciones = document.querySelectorAll('.proposicion').forEach( (item,i)=>{
 			var fila = item.getAttribute('data-fila');
@@ -242,21 +287,78 @@ var MQ = MathQuill.getInterface(2);
 			  spaceBehavesLikeTab: false
 			});
 			proposicionField[fila].reflow();
-			item.addEventListener('click', () => {
-				selectedBox = proposicionField[fila];
-				selectedBox.focus();
-				canDelete = (selectedBox.latex() == '') ? true : false;
-			});
-		});		
-		LastRowCreated = proposicionField.length-1;
-		selectedBox = proposicionField[LastRowCreated];
+			if(setListeners) item.addEventListener("click", onClickPropositionSpan);
+		});
+		LastRow = proposicionField.length-1;
+		selectedBox = proposicionField[selectedRow];
+
+		testOut("LastRowCreated",LastRowCreated);
+		testOut("LastRow",LastRow);
+		testOut("selectedRow",selectedRow);
 		selectedBox.focus();
-	}setFields();
+	}
+	setFields(true);
+	
+	function reassignRows(row){
+		functionTitle("reassignRows");
+
+		filas = document.querySelectorAll('.deleteRow');
+		if(filas.length == 1) filas[0].remove();
+		Propositions = document.querySelectorAll('.proposicion');
+		nextProposition = Propositions[row-1];
+
+		if (selectedRow == LastRow) selectedRow--;
+		while(nextProposition){				
+			row++;
+			currentProposition = nextProposition;
+			nextProposition = Propositions[row-1];
+			var fila = currentProposition.previousSibling;
+			var filaLabel = fila.querySelector('.fila-label');
+
+			currentProposition.setAttribute('data-fila', row-1);
+			if (filaLabel) filaLabel.textContent = row-1;
+		}
+		setFields();
+		setJustificaciones();
+		saveToMemory();
+	}
+
+	function deleteRow(row){
+		functionTitle("deleteRow");
+		row = parseInt(row);
+		selectedRow = row;
+
+		let premise = getPremise(row);
+
+		if(premise && selectedRow != 1){
+			
+			if(premise.parentElement.getAttribute('class') == 'hipotesis'){
+				premise.parentElement.parentElement.classList.add('slide-out-blurred-top');
+				selectedRow--;
+				setTimeout(()=>{
+					premise.parentElement.parentElement.remove();
+					reassignRows(row);
+				}, 240);
+
+			}else{
+
+				premise.classList.add('slide-out-blurred-top');
+				setTimeout(()=>{
+					premise.remove();
+					reassignRows(row);
+				}, 240);
+			}
+					
+		}		
+		
+		
+	}
 
 	function deleteLastRow(){
+		functionTitle("deleteLastRow");
 		document.querySelector('.derivacion').setAttribute('class','derivacion');
-
-		let lastPremise = document.querySelectorAll('.proposicion')[LastRowCreated-1].parentElement;
+		
+		let lastPremise = document.querySelectorAll('.proposicion')[LastRow-1].parentElement;
 
 		let previousSibling = lastPremise.previousElementSibling;
 
@@ -277,47 +379,141 @@ var MQ = MathQuill.getInterface(2);
 				premisasIniciales = false;
 			}
 			lastPremise.remove();
-		}			
+		}
 		setFields();
 		setJustificaciones();
 		saveToMemory();
+		filas = document.querySelectorAll('.deleteRow');
+		if(filas.length == 1) filas[0].remove();
 	}
-	
+
 	function setButtons(){
+		functionTitle("deleteLastRow");
 		var buttons = document.querySelectorAll('.macro').forEach( (item,i)=>{
-			var button = item.getAttribute('data-shortcut');	
+			var button = item.getAttribute('data-shortcut');
 			buttonField[button] = MQ.StaticMath(item);
 		});
 	}
 	setButtons();
 
 
-	function setJustificaciones(){
+	function setJustificaciones(setListeners = false){
+		functionTitle("setJustificaciones");
 		var justificacion = document.querySelectorAll('.justificacion').forEach( (item,i)=>{
 			justificacionField[i] = MQ.MathField(item,{
 			  spaceBehavesLikeTab: false
 			});
-			item.addEventListener('click', () => {
-				selectedBox = justificacionField[i];
-				selectedBox.focus();
-			});
+			if(setListeners) item.addEventListener("click", onClickJustificationSpan);
 		});
 	}
-	setJustificaciones();
+	setJustificaciones(true);
 
+	function crearDeleteSpan(){
+		functionTitle("setJustificaciones");
+		var deleteSpan = document.createElement('span');
+			deleteSpan.setAttribute('class', 'deleteRow');
+			deleteSpan.textContent = 'x';
+			deleteSpan.addEventListener("click", onClickDeleteSpan);
+		return deleteSpan;
+	}
+	
+	function onClickDeleteSpan(e) {
+		functionTitle("onClickDeleteSpan");
+		deleteSpan = e.path[0];
+		filaLabel = deleteSpan.previousElementSibling;
+
+		if (filaLabel && filaLabel.getAttribute('class') == 'fila-label'){
+			row = filaLabel.textContent;
+		}else{
+			row = deleteSpan.parentElement.nextSibling.getAttribute('data-fila');
+		}
+		if(row) deleteRow(row);
+	}
+
+	function setCanDelete(proposicion){
+		cursorBox = proposicion.querySelector(".mq-root-block");
+		if (cursorBox.firstChild.classList && cursorBox.firstChild.classList.contains('mq-cursor')){
+			canDelete = true;
+		}
+		else{
+			canDelete = false;
+		}
+	}
+
+	function onClickPropositionSpan(e) {
+		functionTitle("onClickPropositionSpan");
+
+		
+		proposicionSpan = e.srcElement.offsetParent;
+		selectedRow = parseInt(proposicionSpan.getAttribute('data-fila'));
+		selectedBox = proposicionField[selectedRow];
+
+		if(selectedBox){
+			testOut("LastRowCreated",LastRowCreated);
+			testOut("LastRow",LastRow);
+			testOut("selectedRow",selectedRow);
+			selectedBox.focus();
+
+			setCanDelete(proposicionSpan);
+		}
+	}
+
+	function onClickJustificationSpan(e) {
+		functionTitle("onClickJustificationSpan");
+		justificacionSpan = e.srcElement.offsetParent;
+		proposicionSpan = justificacionSpan.previousElementSibling;
+
+		if(proposicionSpan){
+			selectedRow = parseInt(proposicionSpan.getAttribute('data-fila'));
+			selectedBox = justificacionField[selectedRow-1];
+
+			testOut("LastRowCreated",LastRowCreated);
+			testOut("LastRow",LastRow);
+			testOut("selectedRow",selectedRow);
+			selectedBox.focus();
+		}
+	}
 
 	function crearPremisa(j = ''){
-		var filaSpan = document.createElement('span');
+		functionTitle("crearPremisa");
+		nextProposition = document.querySelector('[data-fila*="' + (parseInt(selectedRow)+1) + '"]');
+		row = parseInt(selectedRow);
+
+		while(nextProposition){				
+			row++;
+			currentProposition = nextProposition;
+			nextProposition = document.querySelector('[data-fila*="' + row + '"]');
+
+			var fila = currentProposition.previousSibling;
+			var filaLabel = fila.querySelector('.fila-label');
+
+			currentProposition.setAttribute('data-fila', row);
+			if (filaLabel) filaLabel.textContent = row;
+		}
+
+		if(LastRow == 1){
+			addDelete(true);
+		}
+		var deleteSpan = crearDeleteSpan();
+
+		var filaLabel = document.createElement('span');
+			filaLabel.setAttribute('class', 'fila-label');
+			filaLabel.textContent = selectedRow+1;
+
+		var filaSpan = document.createElement('div');
 			filaSpan.setAttribute('class', 'fila');
-			filaSpan.textContent = LastRowCreated+1;
+			filaSpan.appendChild(deleteSpan);
+			filaSpan.appendChild(filaLabel);
 			
 		var proposicionSpan = document.createElement('span')
 			proposicionSpan.setAttribute('class', 'proposicion');
-			proposicionSpan.setAttribute('data-fila',LastRowCreated+1);
+			proposicionSpan.setAttribute('data-fila',selectedRow+1);
+			proposicionSpan.addEventListener('click', onClickPropositionSpan);
 
 		var justificacionSpan = document.createElement('span');
 			justificacionSpan.setAttribute('class', 'justificacion');
 			justificacionSpan.textContent = j;
+			justificacionSpan.addEventListener('click', onClickJustificationSpan);
 
 		var premisa = document.createElement('div')
 			premisa.setAttribute('class', 'premisa');
@@ -325,26 +521,46 @@ var MQ = MathQuill.getInterface(2);
 			premisa.appendChild(proposicionSpan);
 			premisa.appendChild(justificacionSpan);
 
+		canDelete = true;
 		saveToMemory();
-		
+
 		return premisa;
 	}
 
 	function añadirPremisa(){
-		if(premisasIniciales){
-			var derivaciones = document.querySelectorAll('.derivacion:not(.cerrada)');
-				derivaciones[derivaciones.length-1].appendChild(crearPremisa());
+
+		functionTitle("añadirPremisa");
+
+		selectedPremise = getCurrentPremise();
+
+		if (selectedPremise.parentElement.getAttribute('class') == 'hipotesis' && !selectedPremise.nextSibling){
+			
+			selectedPremise.parentElement.after(crearPremisa());
+			
+		}else if(selectedPremise.parentElement.getAttribute('class') == 'hipotesis iniciales'){
+
+			if(premisasIniciales && !selectedPremise.nextElementSibling){
+				selectedPremise.parentElement.after(crearPremisa());
+			}else{
+				selectedPremise.after(crearPremisa('H'));
+			}	
+
 		}else{
-			var hipotesis = document.querySelectorAll('.hipotesis');
-				hipotesis[hipotesis.length-1].appendChild(crearPremisa('H'));
-		}		
+			selectedPremise.after(crearPremisa());
+		}
+		LastRowCreated = parseInt(selectedRow) + 1;
+		selectedRow = LastRowCreated;
+
 		setFields();
-		setJustificaciones();
-		proposicionField[LastRowCreated].focus();
+		setJustificaciones();		
 	};
 
-	function añadirSubderivacion(){
+	function añadirSubderivacionDep(){
+
+		functionTitle("añadirSubderivacion");
+
 		premisasIniciales = true;
+
 		var hipotesis = document.createElement('div');
 			hipotesis.setAttribute('class','hipotesis');
 
@@ -353,80 +569,148 @@ var MQ = MathQuill.getInterface(2);
 			derivacion.appendChild(hipotesis);
 
 		var derivaciones = document.querySelectorAll('.derivacion:not(.cerrada)');
+
 		let ultimaDerivacion = derivaciones[derivaciones.length-1];
-		let ultimoHijo = derivaciones[derivaciones.length-1].lastElementChild;
+			testOut("ultimaDerivacion",ultimaDerivacion);
+
+		let ultimoHijo = ultimaDerivacion.lastElementChild;
+			testOut("ultimoHijo",ultimoHijo);
+
 		let penultimoHijo = ultimoHijo.previousElementSibling;
+			testOut("penultimoHijo",penultimoHijo);
+			
 		var hijoField = MQ(ultimoHijo.querySelector('.proposicion'));
-		console.log(hijoField.latex());
-		console.log(ultimoHijo.querySelector('.proposicion'));
-		console.log(ultimoHijo.previousElementSibling);
+			testOut("hijoField",hijoField);
 
 		//arreglar esto
 		if ( (penultimoHijo && penultimoHijo.getAttribute('class') == 'derivacion') || (hijoField && hijoField.latex() != "") || !penultimoHijo)
 		{
-			ultimaDerivacion.appendChild(derivacion);
-		}else if (hijoField && hijoField.latex() == "")
+			ultimaDerivacion.appendChild(derivacion);			
+		}
+		else if (hijoField && hijoField.latex() == "")
 		{
-			LastRowCreated--;
 			ultimoHijo.replaceWith(derivacion);
-		}else{
+		}
+		else
+		{
 			ultimaDerivacion.appendChild(derivacion);
 		}
-		saveToMemory();	
+		saveToMemory();
 		añadirHipotesis();
 	};
 
-	function cerrarSubderivacion(){
-		var derivaciones = document.querySelectorAll('.derivacion:not(.cerrada)');
-			derivaciones[derivaciones.length-1].setAttribute('class', 'derivacion cerrada');
-		añadirPremisa();
+
+	function añadirSubderivacion(){
+
+		functionTitle("añadirSubderivacion");
+
+		premisasIniciales = true;
+
+		//Crear una subderivación
+		var hipotesis = document.createElement('div');
+			hipotesis.setAttribute('class','hipotesis');
+
+		var derivacion = document.createElement('div');
+			derivacion.setAttribute('class', 'derivacion');
+			derivacion.appendChild(hipotesis);
+
+		let currentPremise = getCurrentPremise();
+		let currentProposition = currentPremise.querySelector('.proposition');
+
+		if(currentPremise.parentElement.classList.contains("hipotesis")){
+			currentPremise.parentElement.after(derivacion);
+		}else{
+			currentPremise.after(derivacion);
+		}
+
+		saveToMemory();
+		añadirHipotesis(hipotesis);
 	}
-	
-	function añadirHipotesis(){
-		var hipotesis = document.querySelectorAll('.hipotesis');
-			hipotesis[hipotesis.length-1].appendChild(crearPremisa('H'));
+
+	function cerrarSubderivacion(){
+		functionTitle("cerrarSubderivacion");
+
+		var selectedPremise = getCurrentPremise();
+		var currentDerivative = selectedPremise.parentElement;
+
+		if (!currentDerivative.classList.contains('derivacion')){
+
+			currentDerivative = currentDerivative.parentElement;
+
+		} 
+		if (currentDerivative) currentDerivative.classList.add('cerrada');
+
+		if (!currentDerivative.parentElement.classList.contains('desarrollo')){
+			currentDerivative.after(crearPremisa());
+		}
+
+		LastRowCreated = parseInt(selectedRow) + 1;
+		selectedRow = LastRowCreated;
 
 		setFields();
 		setJustificaciones();
-		proposicionField[LastRowCreated].focus();
+	}
+
+	function añadirHipotesis(hipotesis){
+		functionTitle("añadirHipotesis");	
+		hipotesis.appendChild(crearPremisa('H'));
+
+		LastRowCreated = parseInt(selectedRow) + 1;
+		selectedRow = LastRowCreated;	
+
+		setFields();
+		setJustificaciones();
+		//proposicionField[LastRow].focus();
 	};
 
 	function cerrarPremisasIniciales(){
-		premisasIniciales = true;
-		var derivaciones = document.querySelectorAll('.derivacion:not(.cerrada)');			
-			derivaciones[derivaciones.length-1].appendChild(crearPremisa());
-		setFields();
-		setJustificaciones();
-		proposicionField[LastRowCreated].focus();
+		functionTitle("cerrarPremisasIniciales");
+		if(!premisasIniciales){
+			selectedRow = LastRow;
+
+			var derivaciones = document.querySelectorAll('.derivacion:not(.cerrada)');
+				derivaciones[derivaciones.length-1].appendChild(crearPremisa());
+
+			LastRowCreated = parseInt(selectedRow) + 1;
+			selectedRow = LastRowCreated;
+
+			setFields();
+			setJustificaciones();
+			premisasIniciales = true;
+		}	
 	}
 
 	contenedor.onkeypress = (e) => {
 		if(!e.ctrlKey && e.keyCode != 13){
 			saveToMemory();
 		}
-		//console.log(e);
 	};
 
 	document.onkeydown = (e) => {
 
-		var key = parseInt(e.key); 
+		var key = parseInt(e.key);
 
-		if(e.keyCode == 13){
-			añadirPremisa();			
+		if(e.keyCode == 13 && !e.shiftKey){
+			añadirPremisa();
+			canDelete = true;
 		}
 
-		if (proposicionField[LastRowCreated] == selectedBox && selectedBox.latex() == "") {
-			if (e.keyCode == 8){
-				if (canDelete) {
-					deleteLastRow();
-					canDelete = false;
-				}else{
-					setTimeout(() => {canDelete = true}, 300);
-				}
-			}else{
+
+		if (e.keyCode == 8){
+			
+			if (canDelete) {
+				deleteRow(selectedRow);
 				canDelete = false;
-			}			
+			}
+			setTimeout(() => {
+				setCanDelete( getCurrentPremise().querySelector(".proposicion") )
+			}, 250);
+			
+
+		}else if(e.keyCode != 13){
+			canDelete = false;
 		}
+
 
 		if (e.keyCode == 8 || e.keyCode == 46){
 			saveToMemory();
@@ -434,10 +718,10 @@ var MQ = MathQuill.getInterface(2);
 
 		if(e.ctrlKey){
 			if (e.keyCode == 90){
-				undo();	
+				undo();
 			}
 			if (e.keyCode == 89){
-				redo();	
+				redo();
 			}
 			if (e.keyCode == 86 || e.keyCode == 88){
 				saveToMemory();
@@ -448,10 +732,13 @@ var MQ = MathQuill.getInterface(2);
 			e.preventDefault();
 			if (key >= 1 && key <= 9){
 				selectedBox.write(botones[key-1].getAttribute('data-macro'));
+				testOut("LastRowCreated",LastRowCreated);
+				testOut("LastRow",LastRow);
+				testOut("selectedRow",selectedRow);
 				selectedBox.focus();
 			}
 			if (e.keyCode == 67){
-				cerrarPremisasIniciales();	
+				cerrarPremisasIniciales();
 			}
 			if (e.keyCode == 83){
 				añadirSubderivacion();
@@ -471,9 +758,12 @@ var MQ = MathQuill.getInterface(2);
 		item.addEventListener('click', () => {
 			saveToMemory();
 			selectedBox.write(item.getAttribute('data-macro'));
+			testOut("LastRowCreated",LastRowCreated);
+			testOut("LastRow",LastRow);
+			testOut("selectedRow",selectedRow);
 			selectedBox.focus();
 		});
-	});	
+	});
 
 	var acciones = document.querySelectorAll('.btn.accion').forEach((item,i)=>{
 		item.addEventListener('click', () => {
@@ -481,28 +771,29 @@ var MQ = MathQuill.getInterface(2);
 		});
 	});
 
-	function changeTitle(title){
-		document.title = title + " - EDL 1.0.0";
+	function changeTitle(title, version){
+		functionTitle("changeTitle");
+		document.title = title + " - EDL " + version;
 	}
 
 	function download() {
-
+		functionTitle("download");
 		let clone = contenedor.cloneNode(true);
 		let proposiciones = clone.querySelectorAll('.proposicion').forEach( (item,i)=>{
 			var fila = item.getAttribute('data-fila');
 			var latex = proposicionField[fila].latex();
 			item.setAttribute('class','proposicion');
 			item.innerHTML = latex;
-		});		
+		});
 
 		let justificaciones = clone.querySelectorAll('.justificacion').forEach( (item,i)=>{
 			var latex = justificacionField[i].latex();
 			item.setAttribute('class','justificacion');
 			item.innerHTML = latex;
-		});	
+		});
 
 		let latex = conclusionField.latex();
-		let conclusion = clone.querySelector('.conclusion');			
+		let conclusion = clone.querySelector('.conclusion');
 			conclusion.setAttribute('class','conclusion');
 			conclusion.innerHTML = latex;
 
@@ -511,41 +802,67 @@ var MQ = MathQuill.getInterface(2);
 	        window.navigator.msSaveOrOpenBlob(file, fileName + '.dv');
 	    else { // Others
 	    	let url = URL.createObjectURL(file);
-	        let a = document.createElement("a");	        
+	        let a = document.createElement("a");
 	        	a.href = url;
 	        	a.download = fileName + '.dv';
 		        document.body.appendChild(a);
 		        a.click();
 		        setTimeout(function() {
 		            document.body.removeChild(a);
-		            window.URL.revokeObjectURL(url);  
-		        }, 0); 
+		            window.URL.revokeObjectURL(url);
+		        }, 0);
 	    }
 	}
 	function open(){
+		functionTitle("open");
 		if (abrirInput) {
     		abrirInput.click();
   		}
 	}
+
+	function addDelete(addFirst){
+		functionTitle("addDelete");
+		var filas = document.querySelectorAll(".fila")
+		if ((filas.length > 1) || addFirst){
+			filas.forEach( (fila, i) => {
+				var deleteSpan = crearDeleteSpan();
+				fila.appendChild(deleteSpan);
+			});
+		}
+	}
+
 	function handleFile(file){
+		functionTitle("handleFile");
 		var reader = new FileReader();
    		reader.readAsText(file[0], "UTF-8");
-   		reader.onload = function (e) {
-   			changeTitle(file[0].name.split('.')[0]);
+   		reader.onload = function (e) { 
+			contenedor.firstChild.remove();	
 	        contenedor.innerHTML = e.target.result;
 	        premisasIniciales = (document.querySelectorAll('.hipotesis')[0].nextElementSibling) ? true : false;
-	        setFields();
-			setJustificaciones();
+	        setFields(true);
+			setJustificaciones(true);
 			setConclusion();
+			addDelete();
 			saveToMemory();
-	    }
+			var desarrollo = contenedor.getElementsByClassName('desarrollo');
+				if(testingMode) console.log(desarrollo[0]);
+				var fileAppVersion = desarrollo[0].getAttribute('data-version');
+				if(fileAppVersion != appVersion){ 
+					alert('Este arcivo fue creado en una versión anterior de EDL esto podría generar conflictos en la ejecución de la aplicación. Si esto ocurre, use una versión anterior de EDL para abrir el archivo.');
+				}
+			changeTitle(file[0].name.split('.')[0], (fileAppVersion) ? fileAppVersion : '1.0.x');
+		}
 	    reader.onerror = function (e) {
 	        alert("Error leyendo el archivo");
 	    }
 	}
 
 	function cerrarInstrucciones(){
+		functionTitle("cerrarInstrucciones");
 		document.querySelector('.instrucciones').style.display = 'none';
+		testOut("LastRowCreated",LastRowCreated);
+		testOut("LastRow",LastRow);
+		testOut("selectedRow",selectedRow);
 		selectedBox.focus();
 	}
 
