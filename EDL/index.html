@@ -11,21 +11,72 @@
 	<link rel="stylesheet" href="style-dark.css">
 </head>
 <body>
-<div class="instrucciones">
+<div class="instrucciones slide-in-right">
 	<button class="salir" onclick="cerrarInstrucciones()">x</button>
-	<div class="contenido">
-		<p>Instrucciones:</p>
-		<ul>
-			<li>Escribe usando el teclado en las cajas de texto enfocadas (borde azul)</li>
-			<li>Usa los botones de la parte inferior para ingresar símbolos o usa los atajos alt+1, alt+2, etc.</li>
-			<li>Usa los botones de la parte inferior para realizar acciones como: cerrar las premisas iniciales, añadir premisa, abrir subderivación, etc. o usa los atajos.</li>
-			<li>Usa la tecla tab para pasar a la caja de texto de justificación cuando hayas terminado de escribir tu linea.(Las Hipotesis traen la justificación H por defecto pero esta puede ser cambiada de ser necesario)</li>
-			<li>Pulsa enter al terminar la justificación para escribir una nueva linea.</li>
-			<li>Guarda tu progreso o abre una derivación haciendo clic en los botones de la parte inferior derecha (una vez guardado el archivo las lineas escritas hasta ese momento no podrán ser borradas al abrirlo en una siguiente ocasión, estas solo podrán ser editadas)</li>
-
-		</ul>
+	<div class="contenedor">
+		<nav>
+			<ul>
+				<li class="tab active" id="ins" data-tab="#instrucciones"> Instrucciones</li>
+				<li class="tab" id="shortcuts" data-tab="#atajos"> Atajos de teclado</li>
+			</ul>
+		</nav>
+		<div class="contenido active" id="instrucciones">
+			
+	
+			<h3>Instrucciones:</h3>
+			<ul>
+				<li>Escribe usando el teclado en las cajas de texto enfocadas (borde azul)</li>
+				<li>Usa los botones de la parte inferior para ingresar símbolos o usa los atajos alt+1, alt+2, etc.</li>
+				<li>Usa los botones de la parte inferior para realizar acciones como: cerrar las premisas iniciales, añadir premisa, abrir subderivación, etc. o usa los atajos.</li>
+				<li>Usa la tecla tab para pasar a la caja de texto de justificación cuando hayas terminado de escribir tu linea.(Las Hipotesis traen la justificación H por defecto pero esta puede ser cambiada de ser necesario)</li>
+				<li>Pulsa enter al terminar la justificación para escribir una nueva linea.</li>
+				<li>Guarda tu progreso o abre una derivación haciendo clic en los botones de la parte inferior derecha. O usa los atajos.</li>
+	
+			</ul>
+		</div>
+		<div class="contenido" id="atajos">
+			
+	
+			<h3>Atajos de teclado:</h3>
+			<div class="lista">
+				<div class="keys"><span class="key">Alt</span>+<span class="key">1 - 9</span></div><p>Añadir simbolo</p>
+			</div>
+			<div class="lista">
+				<div class="keys"><span class="key">↓</span></div><p>Siguiente premisa</p>
+				<div class="keys"><span class="key">↑</span></div><p>Premisa anterior</p>
+				<div class="keys"><span class="key">Enter ↵</span></div><p>Añadir premisa abajo</p>
+				<div class="keys"><span class="key">⇧ Shift</span>+<span class="key">Enter ↵</span></div><p>Añadir premisa arriba</p>
+				<div class="keys"><span class="key">⇧ Shift</span>+<span class="key">Supr</span></div><p>Eliminar linea seleccionada</p>
+			</div>
+			<div class="lista">
+				<div class="keys"><span class="key">Alt</span>+<span class="key">c</span></div><p>Cerrar hipotesis iniciales</p>
+				<div class="keys"><span class="key">Alt</span>+<span class="key">s</span></div><p>Abrir subderivación</p>
+				<div class="keys"><span class="key">Alt</span>+<span class="key">d</span></div><p>Cerrar subderivación</p>			
+			</div>
+			<div class="lista">			
+				<div class="keys"><span class="key">Ctrl</span>+<span class="key">s</span></div><p>Guardar derivación</p>
+				<div class="keys"><span class="key">Ctrl</span>+<span class="key">a</span></div><p>Abrir derivación</p>
+			</div>
+			<div class="lista">
+				<div class="keys"><span class="key">Ctrl</span>+<span class="key">z</span></div><p>Deshacer última acción</p>
+				<div class="keys"><span class="key">Ctrl</span>+<span class="key">y</span></div><p>Rehacer última acción</p>
+				<div class="keys"><span class="key">Ctrl</span>+<span class="key">x</span></div><p>Copiar</p>
+				<div class="keys"><span class="key">Ctrl</span>+<span class="key">x</span></div><p>Cortar</p>
+				<div class="keys"><span class="key">Ctrl</span>+<span class="key">v</span></div><p>Pegar</p>
+			</div>
+		</div>
 	</div>
 </div>
+<nav class="main">
+	<div class="logo">
+		<span class="siglas">EDL</span> - Editor de Derivaciones Lógicas
+	</div>
+	<div class="options">
+		<a id="instructions" class="info" href="#" alt="Lista de instrucciones" onclick="abrirInstrucciones()"><span>Instrucciones</span></a>
+		<a id="claro" class="color" href="#" style="display: none" alt="Cambiar color"><span>Claro</span></a>
+		<a id="oscuro"  class="color" href="#" alt="Cambiar color"><span>Oscuro</span></a>
+	</div>
+</nav>
 <section class="pantalla">
 	<div class="contenedor">
 		<div class="desarrollo">
@@ -45,10 +96,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="styles">
-		<a id="claro" class="color" href="#" style="display: none"><span>Claro</span></a>
-		<a id="oscuro"  class="color" href="#"><span>Oscuro</span></a>
-	</div>
+	
 	<div class="buttons">
 		<div class="atajos">
 			<button class="btn simbolos" data-macro="\forall" data-shortcut="1">
@@ -142,7 +190,7 @@ var MQ = MathQuill.getInterface(2);
 	var selectedRow = 1;
 	var canDelete = false;
 	var canSave = true;
-	var contenedor = document.querySelector('.contenedor');
+	var contenedor = document.querySelector('.pantalla .contenedor');
 
 	var memory = [{'contenedor' : contenedor.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow}];
 	var cursor = 0;
@@ -154,6 +202,22 @@ var MQ = MathQuill.getInterface(2);
 	var botonOscuro = document.getElementById('oscuro');
 
 	document.styleSheets[3].disabled = true;
+
+
+	var tabs = document.querySelector(".instrucciones .contenedor nav ul");
+
+	tabs.addEventListener("click", (e) => {
+		tab = e.target;
+
+		if( tab.classList.contains("tab") && !tab.classList.contains("active")){
+			tabs.querySelector(".tab.active").classList.remove("active");
+			tab.classList.add("active");	
+			document.querySelector(".contenido.active").classList.remove("active");
+			document.querySelector(tab.getAttribute('data-tab')).classList.add("active");
+		};		
+	});
+
+
 
 	function getCurrentPremise(){
 		return document.querySelector('[data-fila*="' + selectedRow + '"]').parentElement;		
@@ -170,20 +234,14 @@ var MQ = MathQuill.getInterface(2);
 		document.styleSheets[3].disabled = false;
 	});
 
+	botonOscuro.click();
+
 	botonClaro.addEventListener('click', (e)=>{
 		e.preventDefault();
 		botonOscuro.style.display = "block";
 		botonClaro.style.display = "none";
 		document.styleSheets[3].disabled = true;
 	});
-
-	//Eliminar Linea
-	contenedor.addEventListener('click', (e) => {
-		var row = null;
-		if (e.path[0].getAttribute('class') == 'deleteRow'){
-			
-		};
-	})
 
 	changeTitle(fileName, appVersion);
 
@@ -330,7 +388,7 @@ var MQ = MathQuill.getInterface(2);
 
 		let premise = getPremise(row);
 
-		if(premise && selectedRow != 1){
+		if(premise && LastRow != 1){
 			
 			if(premise.parentElement.getAttribute('class') == 'hipotesis'){
 				premise.parentElement.parentElement.classList.add('slide-out-blurred-top');
@@ -348,10 +406,8 @@ var MQ = MathQuill.getInterface(2);
 					reassignRows(row);
 				}, 240);
 			}
-					
+
 		}		
-		
-		
 	}
 
 	function deleteLastRow(){
@@ -419,7 +475,8 @@ var MQ = MathQuill.getInterface(2);
 	
 	function onClickDeleteSpan(e) {
 		functionTitle("onClickDeleteSpan");
-		deleteSpan = e.path[0];
+		console.log(e);
+		deleteSpan = e.target;
 		filaLabel = deleteSpan.previousElementSibling;
 
 		if (filaLabel && filaLabel.getAttribute('class') == 'fila-label'){
@@ -430,19 +487,25 @@ var MQ = MathQuill.getInterface(2);
 		if(row) deleteRow(row);
 	}
 
+	function isCursorFirst(proposicion){
+		cursorMark = proposicion.querySelector(".mq-root-block").firstChild;
+		return (cursorMark.classList && cursorMark.classList.contains('mq-cursor'))
+		 ? true : false;
+	}
+
 	function setCanDelete(proposicion){
-		cursorBox = proposicion.querySelector(".mq-root-block");
-		if (cursorBox.firstChild.classList && cursorBox.firstChild.classList.contains('mq-cursor')){
+
+		if (isCursorFirst(proposicion)){
 			canDelete = true;
 		}
 		else{
 			canDelete = false;
 		}
+
 	}
 
 	function onClickPropositionSpan(e) {
 		functionTitle("onClickPropositionSpan");
-
 		
 		proposicionSpan = e.srcElement.offsetParent;
 		selectedRow = parseInt(proposicionSpan.getAttribute('data-fila'));
@@ -686,15 +749,23 @@ var MQ = MathQuill.getInterface(2);
 		}
 	};
 
+
+
 	document.onkeydown = (e) => {
 
 		var key = parseInt(e.key);
 
 		if(e.keyCode == 13 && !e.shiftKey){
-			añadirPremisa();
+			if(isCursorFirst( getCurrentPremise().querySelector(".proposicion")) && selectedRow != 1 && selectedBox.latex() != ""){
+				selectedRow--;
+				añadirPremisa();
+
+			}else{
+				añadirPremisa();
+			}
+			
 			canDelete = true;
 		}
-
 
 		if (e.keyCode == 8){
 			
@@ -706,14 +777,42 @@ var MQ = MathQuill.getInterface(2);
 				setCanDelete( getCurrentPremise().querySelector(".proposicion") )
 			}, 250);
 			
-
 		}else if(e.keyCode != 13){
 			canDelete = false;
 		}
 
-
 		if (e.keyCode == 8 || e.keyCode == 46){
 			saveToMemory();
+		}
+
+		if(e.keyCode == 38){
+			if(selectedRow != 1){
+				selectedRow--;
+				selectedBox = proposicionField[selectedRow];
+
+				if(selectedBox){
+					testOut("LastRowCreated",LastRowCreated);
+					testOut("LastRow",LastRow);
+					testOut("selectedRow",selectedRow);
+					selectedBox.focus();
+					setCanDelete( getCurrentPremise() );
+				}
+			}
+		}
+
+		if(e.keyCode == 40){
+			if(selectedRow != LastRow){
+				selectedRow++;
+				selectedBox = proposicionField[selectedRow];
+
+				if(selectedBox){
+					testOut("LastRowCreated",LastRowCreated);
+					testOut("LastRow",LastRow);
+					testOut("selectedRow",selectedRow);
+					selectedBox.focus();
+					setCanDelete( getCurrentPremise() );
+				}
+			}
 		}
 
 		if(e.ctrlKey){
@@ -725,6 +824,27 @@ var MQ = MathQuill.getInterface(2);
 			}
 			if (e.keyCode == 86 || e.keyCode == 88){
 				saveToMemory();
+			}
+			if (e.keyCode == 65){
+				e.preventDefault();
+				open();
+			}
+			if(e.keyCode == 83){
+				e.preventDefault();
+				download();
+			}
+		}
+
+		if(e.shiftKey){
+			if (e.keyCode == 13){
+				if(selectedRow != 1){
+					selectedRow--;
+					añadirPremisa();
+				}
+			}
+
+			if(e.keyCode == 46){
+				if (selectedBox != conclusionField) deleteRow(selectedRow);
 			}
 		}
 
@@ -859,7 +979,18 @@ var MQ = MathQuill.getInterface(2);
 
 	function cerrarInstrucciones(){
 		functionTitle("cerrarInstrucciones");
-		document.querySelector('.instrucciones').style.display = 'none';
+		document.querySelector('.instrucciones').classList.remove('slide-in-right');
+		document.querySelector('.instrucciones').classList.add('slide-out-right');
+		testOut("LastRowCreated",LastRowCreated);
+		testOut("LastRow",LastRow);
+		testOut("selectedRow",selectedRow);
+		selectedBox.focus();
+	}
+
+	function abrirInstrucciones(){
+		functionTitle("abrirInstrucciones");
+		document.querySelector('.instrucciones').classList.add('slide-in-right');
+		document.querySelector('.instrucciones').classList.remove('slide-out-right');
 		testOut("LastRowCreated",LastRowCreated);
 		testOut("LastRow",LastRow);
 		testOut("selectedRow",selectedRow);

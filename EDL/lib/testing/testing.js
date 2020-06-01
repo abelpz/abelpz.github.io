@@ -1,4 +1,4 @@
-var testingMode = false;
+var testingMode = true;
 
 var changingColor = false;
 var ActiveColor = 1;
