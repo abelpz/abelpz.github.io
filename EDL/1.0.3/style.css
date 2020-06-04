@@ -1,0 +1,597 @@
+body {
+    background: hsla(0, 0%, 97%, 1);
+}
+
+.pantalla .contenedor {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    /* margin-bottom: 15px; */
+    overflow: auto;
+    padding: 15px 2%;
+    padding-bottom: 0;
+    /* max-height: 70vh; */
+    box-sizing: border-box;
+    position: relative;
+    flex-grow: 1;
+}
+
+.derivacion {
+    margin-left: 0.5em;
+    margin-bottom: 0.25em;
+    border-left:2px solid;
+    display: block;
+}
+
+
+.derivacion.cerrada:after {
+    content: '';
+    border-bottom: 2px solid;
+    width: 20px;
+    display: block;
+}
+
+.derivacion p {
+    display: block;
+}
+
+.premisa {
+    padding: 0.25em 0.4em;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.contenedor .fila p {
+    margin: 0;
+    margin-bottom: 0.50em;
+    padding: 2px;
+    text-align: right;
+}
+
+.hipotesis {
+    border-bottom: 2px solid;
+    margin-bottom: 0.25em;
+    width: -moz-fit-content;
+}
+
+.desarrollo {
+    width: fit-content;
+    width: +moz-fit-content;
+    /* height: 70vh; */
+    /* overflow: auto; */
+    padding-right: 150px;
+}
+
+span.proposicion, span.justificacion {
+    border: 0;
+    text-align: left;
+}
+
+button.btn {
+    background: #fff;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    padding-top: 0.60em;
+    padding-left: 0.60em;
+    font-weight: 600;
+    position: relative;
+    margin-bottom: 10px;
+    display: block;
+    box-sizing: border-box;
+    margin-right: 5px;
+}
+
+button.btn * {
+    cursor: default;
+}
+
+button.btn:hover {
+    background: #f1f1f1;
+}
+
+button.btn:active {
+    background: #e6e6e6;
+}
+
+.btn span.macro {
+    font-size: 1em;
+    font-weight: 800;
+}
+
+span.shorcut-label {
+    position: absolute;
+    padding: 0.25em;
+    font-size: 0.75em;
+    top: 0;
+    left: 0;
+}
+
+.fila {
+    display: inline-block;
+    position: absolute;
+    left: -30px;
+    width: 20px;
+    text-align: right;
+    /* margin-left: -40px; */
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 2px;
+}
+
+.desarrollo>.derivacion:first-child {
+    position: relative;
+    margin-left: 30px;
+    width: -moz-fit-content;
+}
+
+
+span.justificacion {
+    position: absolute;
+    left: calc(100% + 5px);
+    /* padding-top: 5px; */
+    display: block;
+}
+
+.accion span.shorcut-label {
+    font-size: 0.9em;
+}
+
+button.btn.accion {
+    padding-left: 1em;
+}
+
+button.accion span.titulo {
+    font-weight: 400;
+    padding-bottom: 0.50em;
+    display: inline-block;
+    text-align: center;
+}
+
+body {
+    font-family: monospace;
+    margin: 0;
+}
+
+.buttons {
+    padding: 16px 25px;
+    box-shadow: 1px 1px 20px #00000033;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    align-items: flex-end;
+    height: auto;
+}
+
+.caja-conclusion {
+    /* position: fixed; */
+    /* right: 50px; */
+    margin-left: 30px;
+    margin-top: 10px;
+}
+
+section.pantalla {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 95px);
+    padding-top: 50px;
+    position: fixed;
+    width: 100%;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    padding: 15px 25px;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fff;
+    z-index: 300;
+}
+
+.atajos, .acciones {
+    display: flex;
+    flex-wrap: wrap;
+    height: auto;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.atajos p,.acciones p {
+    width: 100%;
+}
+
+span.conclusion {
+    border: 0;
+    border-bottom: 1px solid #777;
+    min-width: 115px;
+}
+
+button.btn.accion.file {
+    padding: 5px!important;
+}
+
+button.btn i:before {
+    margin-left: 0;
+    font-size: 17px;
+}
+
+button.btn i {
+    margin-left: 0;
+}
+
+button.accion.file span.titulo {
+    padding-bottom: 0;
+}
+
+.instrucciones {
+    width: 90%;
+    height: calc(100vh - 95px);
+    margin: auto;
+    max-width: 600px;
+    position: fixed;
+    right: 0;
+    top: 50px;
+    background: #ffffff;
+    box-sizing: border-box;
+    z-index: 300;
+    color: #101010;
+    box-shadow: 4px 0px 10px 0px;
+}
+
+.instrucciones ul li {margin-bottom: 20px;font-size: 1.1em;}
+
+.instrucciones p {
+    padding-left: 23px;
+    font-size: 1em;
+    font-weight: 700;
+}
+
+button.salir {
+    font-family: monospace;
+    border: 0;
+    background: #ff4f4f;
+    cursor: pointer;
+    border-radius: 3px;
+    padding: 0px 7px 2px;
+    font-size: 20px;
+    color: #ffffff;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    margin: 5px 14px;
+    z-index: 30;
+}
+
+.instrucciones .contenido {
+    display: none;
+    overflow: auto;
+    padding: 10px 25px;
+    height: calc(100% - 64px);
+}
+
+.instrucciones .contenido.active{
+    display: block;
+}
+
+span.proposicion {
+    min-width: 102px;
+}
+
+.options {
+    position: fixed;
+    top: 0;
+    right: 0;
+    margin: 8px 20px;
+    padding-top: 0%;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 1em;
+    z-index: 400;
+}
+
+.color, .info {
+    padding: 7px;
+    background: #f3f3f3;
+    text-decoration: none;
+    font-weight: bolder;
+    font-family: monospace;
+    font-size: 1.1em;
+    border-radius: 6px;
+    box-shadow: 0px 1px 7px 0px rgba(0, 0, 0, 0.1);
+    border: 1px solid #1e222b29;
+}
+
+.options a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#claro {
+    color: #525a71;
+    background: #e9f3f5;
+}
+
+#oscuro {
+    color: #e9f3f5;
+    background: #1e222b;
+}
+
+.deleteRow {
+    left: -10px;
+    top: 5px;
+    font-weight: 800;
+    color: #ff4f4f;
+    font-size: 10pt;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    padding: 2px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.premisa:hover span.deleteRow {
+    display: flex;
+}
+
+span.deleteRow:hover {
+    background: #ff4f4f;
+    color: #191b1f;
+}
+
+.premisa:hover>*:not(.fila):after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    border-bottom: 1px dotted;
+    bottom: 0;
+    left: 0;
+    display: block;
+    opacity: 0.25;
+}
+
+.premisa>.proposicion {
+    position: relative;
+}
+
+
+
+.slide-out-blurred-top {
+	-webkit-animation: slide-out-blurred-top 0.24s cubic-bezier(0.755, 0.050, 0.855, 0.060) both;
+	        animation: slide-out-blurred-top 0.24s cubic-bezier(0.755, 0.050, 0.855, 0.060) both;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-5-27 12:42:51
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation slide-out-blurred-top
+ * ----------------------------------------
+ */
+ @-webkit-keyframes slide-out-blurred-top {
+    0% {
+      -webkit-transform: translateY(0) scaleY(1) scaleX(1);
+              transform: translateY(0) scaleY(1) scaleX(1);
+      -webkit-transform-origin: 50% 0%;
+              transform-origin: 50% 0%;
+      -webkit-filter: blur(0);
+              filter: blur(0);
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: translateY(-1000px) scaleY(2) scaleX(0.2);
+              transform: translateY(-1000px) scaleY(2) scaleX(0.2);
+      -webkit-transform-origin: 50% 0%;
+              transform-origin: 50% 0%;
+      -webkit-filter: blur(40px);
+              filter: blur(40px);
+      opacity: 0;
+    }
+  }
+  @keyframes slide-out-blurred-top {
+    0% {
+      -webkit-transform: translateY(0) scaleY(1) scaleX(1);
+              transform: translateY(0) scaleY(1) scaleX(1);
+      -webkit-transform-origin: 50% 0%;
+              transform-origin: 50% 0%;
+      -webkit-filter: blur(0);
+              filter: blur(0);
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: translateY(-1000px) scaleY(2) scaleX(0.2);
+              transform: translateY(-1000px) scaleY(2) scaleX(0.2);
+      -webkit-transform-origin: 50% 0%;
+              transform-origin: 50% 0%;
+      -webkit-filter: blur(40px);
+              filter: blur(40px);
+      opacity: 0;
+    }
+  }
+
+nav.main {
+    padding: 17px 25px;
+    background: #ffffff;
+    color: #4c4c4c;
+    margin-bottom: 10px;
+    position: fixed;
+    width: 100%;
+    z-index: 300;
+}
+
+.logo .siglas {
+    font-size: 1.1em;
+    font-weight: 800;
+}
+
+#instructions {
+    background: #253779;
+    color: #fff;
+}
+
+.slide-in-right {
+	-webkit-animation: slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+	        animation: slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-6-1 11:39:26
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation slide-in-right
+ * ----------------------------------------
+ */
+ @-webkit-keyframes slide-in-right {
+    0% {
+      -webkit-transform: translateX(1000px);
+              transform: translateX(1000px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateX(0);
+              transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  @keyframes slide-in-right {
+    0% {
+      -webkit-transform: translateX(1000px);
+              transform: translateX(1000px);
+      opacity: 0;
+    }
+    100% {
+      -webkit-transform: translateX(0);
+              transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+
+.slide-out-right {
+	-webkit-animation: slide-out-right 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+	        animation: slide-out-right 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2020-6-1 11:41:53
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation slide-out-right
+ * ----------------------------------------
+ */
+ @-webkit-keyframes slide-out-right {
+    0% {
+      -webkit-transform: translateX(0);
+              transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: translateX(1000px);
+              transform: translateX(1000px);
+      opacity: 0;
+    }
+  }
+  @keyframes slide-out-right {
+    0% {
+      -webkit-transform: translateX(0);
+              transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      -webkit-transform: translateX(1000px);
+              transform: translateX(1000px);
+      opacity: 0;
+    }
+  }
+  
+
+.instrucciones .contenedor {
+    height: 100%;
+    position: relative;
+}
+
+.instrucciones nav ul li {
+    display: block;
+    background: #e4e4e4;
+    padding: 11px;
+    margin: 0;
+    border-radius: 5px 5px 0px 0px;
+    width: fit-content;
+    margin-right: 0px;
+    margin-left: 3px;
+    cursor: pointer;
+}
+
+.instrucciones nav ul {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    padding-top: 5px;
+    padding-right: 65px;
+    background-color: #f1f1f1;
+}
+
+.instrucciones nav ul li.active {
+    background: #ffffff;
+    border-top: 3px solid #314690;
+}
+
+.instrucciones nav ul li:not(.active):hover {
+    background: #f7f7f7;
+}
+
+span.key {
+    color: #fff;
+    background: linear-gradient(90deg, #1b1b1b, #3a3a3a);
+    border: 4px solid #252525;
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: block;
+    width: fit-content;
+}
+
+#atajos .lista {
+    margin-top: 50px;
+    padding: 0;
+    display: grid;
+    grid-row-gap: 10px;
+    grid-template-columns: 50% 50%;
+}
+
+#atajos .keys {
+    display: flex;
+    flex-grow: 0;
+    align-items: center;
+    text-align: right;
+    justify-content: flex-end;
+    padding-right: 10px;
+    border-right: 1px solid #7b7b7b;
+}
