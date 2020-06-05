@@ -27,7 +27,7 @@ button.btn {
 }
 
 button#save {
-    background: #115b88;
+    background: #1d3994;
 }
 
 button#open {
@@ -52,7 +52,7 @@ button.btn:active {
 }
 
 button#save:hover {
-    background: #0666a0;
+    background: #1038ca;
 }
 
 button#open:hover {
@@ -90,4 +90,36 @@ span.key {
     color: #000;
     background: linear-gradient(90deg, white, #e4e4e4eb);
     border: 4px solid #ccc;
+}
+
+footer a {
+    color: #68a5ff;
+}
+
+input#title-box {
+    color: rgba(255, 255, 255, 0.60);
+}
+
+input#title-box:hover, input#title-box:focus {
+    color: rgba(255, 255, 255, 0.83);
+}
+
+.acciones .btn.accion#anadir:hover {
+    background: #184bf5;
+}
+
+.acciones .btn.accion#eliminar:hover {
+    background: #d23434;
+}
+
+.acciones .btn.accion#subderivacion:hover {
+    background: #1b7337;
+}
+
+.acciones .btn.accion {
+    background: #112f92;
+}
+
+.edicion button.btn.accion.edit.disabled:hover {
+    background: #353844;
 }
