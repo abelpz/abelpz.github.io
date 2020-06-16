@@ -725,6 +725,11 @@ var MQ = MathQuill.getInterface(2);
 	//Principal
 	var question = window.frameElement.parentElement.previousElementSibling;
 	console.log(question);
+	let answer = question.querySelector(".hipotesis.iniciales").nextElementSibling;
+		if (!answer.querySelector(".proposicion")){
+			answer.innerHTML = answer.innerHTML + '<span class="proposicion" data-fila="'+ answer.querySelector(".fila-label").innerHTML +'"> </span><span class="justificacion"> </span>';
+		}
+
 	var questionInput = question.parentElement.nextElementSibling.querySelector(".question_input");
 	console.log(questionInput);
 	var questionID = 0;
