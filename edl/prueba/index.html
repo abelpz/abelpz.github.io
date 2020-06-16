@@ -12,31 +12,6 @@
 	<link rel="stylesheet" href="../style-dark.css">
 </head>
 <body>
-<div class="edl-question" style="display: none;">
-	<div class="desarrollo" data-version="[prueba]" data-id="38990">
-		<div class="derivacion cerrada">
-			<div class="hipotesis iniciales">
-				<div class="premisa">
-					<div class="fila">
-						<span class="fila-label">1</span>
-					<span class="deleteRow">x</span></div>
-					<span class="proposicion" data-fila="1">P\wedge Q\rightarrow\neg R</span>
-					<span class="justificacion">H</span>
-				</div><div class="premisa"><div class="fila"><span class="fila-label">2</span><span class="deleteRow">x</span></div><span class="proposicion" data-fila="2">P\vee Q\rightarrow R</span><span class="justificacion">H</span></div>
-			</div>
-			<div class="premisa">
-				<div class="fila">
-					<span class="fila-label">3</span>
-				</div>
-				<span class="proposicion" data-fila="3"></span>
-				<span class="justificacion"></span>
-			</div>
-		</div>
-		<div class="caja-conclusion">
-			<span class="conclusion">\therefore\left(P\rightarrow\neg Q\right)</span>
-		</div>
-	</div>
-</div>
 	
 <div class="overlay">
 	<div class="intro-box">
@@ -735,13 +710,6 @@
 	</div>
 </section>
 <footer><span>*Atajos con alt + tecla</span><span style="float:right;"> Creado por <a target="_blank" href="https://github.com/abelpz/EDL">Abel Pérez</a></span></footer>
-
-<input type="text" class="question_input" style="
-    position: absolute;
-    bottom: 0;
-    z-index: 10000;
-" value>
-
 <script src="../lib/jquery/jquery.min.js"></script>
 <script src="../lib/mathquill/mathquill.js"></script>
 <script src="../lib/testing/testing.js"></script>
@@ -755,8 +723,10 @@ var MQ = MathQuill.getInterface(2);
 <script>
 
 	//Principal
-	var question = document.querySelector(".edl-question");
-	var questionInput = document.querySelector(".question_input");
+	var question = window.frameElement.parentElement.previousElementSibling;
+	console.log(question);
+	var questionInput = question.parentElement.nextElementSibling.querySelector(".question_input");
+	console.log(questionInput);
 	var questionID = 0;
 
 	function getQuestion(){
@@ -773,7 +743,7 @@ var MQ = MathQuill.getInterface(2);
 	}
 
 	function initEDL(){
-		//questionInput.style.display = "none";
+		questionInput.style.display = "none";
 		changeTitle(fileName, appVersion);
 		setTimeout(() => {
 		introScreen.classList.add("fade-out");
@@ -783,7 +753,8 @@ var MQ = MathQuill.getInterface(2);
 			}, 500);
 			
 		}, 2000);
-		getQuestion();
+
+		if(question) getQuestion();
 		setButtons();
 	}initEDL();
 	console.log(window);
