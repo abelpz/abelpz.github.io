@@ -5,11 +5,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<title>Derivación - EDL 1.0.x</title>
-	<link rel="icon" type="image/png" href="../favicon.png"/>
-	<link rel="stylesheet" type="text/css" href="../lib/fonts/icons.css">
-	<link rel="stylesheet" href="../lib/mathquill/mathquill.css"/>
-	<link rel="stylesheet" href="../style.css">
-	<link rel="stylesheet" href="../style-dark.css">
+	<link rel="icon" type="image/png" href="https://abelpz.github.io/edl/favicon.png"/>
+	<link rel="stylesheet" type="text/css" href="https://abelpz.github.io/edl/lib/fonts/icons.css">
+	<link rel="stylesheet" href="https://abelpz.github.io/edl/lib/mathquill/mathquill.css">
+	<link rel="stylesheet" href="https://abelpz.github.io/edl/style.css">
+	<link rel="stylesheet" href="https://abelpz.github.io/edl/style-dark.css">
 </head>
 <body>
 	
@@ -710,28 +710,26 @@
 	</div>
 </section>
 <footer><span>*Atajos con alt + tecla</span><span style="float:right;"> Creado por <a target="_blank" href="https://github.com/abelpz/EDL">Abel Pérez</a></span></footer>
-<script src="../lib/jquery/jquery.min.js"></script>
-<script src="../lib/mathquill/mathquill.js"></script>
-<script src="../lib/testing/testing.js"></script>
+<script src="https://abelpz.github.io/edl/lib/jquery/jquery.min.js"></script>
+<script src="https://abelpz.github.io/edl/lib/mathquill/mathquill.js"></script>
+<script src="https://abelpz.github.io/edl/lib/testing/testing.js"></script>
 
 <script>
 var MQ = MathQuill.getInterface(2);
 </script>
 
-<script src="main.js"></script>
+<script src="https://abelpz.github.io/edl/prueba/main.js"></script>
 
 <script>
 
 	//Principal
 	var question = window.frameElement.parentElement.previousElementSibling;
-	console.log(question);
 	let answer = question.querySelector(".hipotesis.iniciales").nextElementSibling;
 		if (!answer.querySelector(".proposicion")){
 			answer.innerHTML = answer.innerHTML + '<span class="proposicion" data-fila="'+ answer.querySelector(".fila-label").innerHTML +'"> </span><span class="justificacion"> </span>';
 		}
 
 	var questionInput = question.parentElement.nextElementSibling.querySelector(".question_input");
-	console.log(questionInput);
 	var questionID = 0;
 
 	function getQuestion(){
@@ -766,8 +764,6 @@ var MQ = MathQuill.getInterface(2);
 		if(question) getQuestion();
 		setButtons();
 	}initEDL();
-	console.log(window);
-	console.log(parent);
 </script>
 </body>
 </html>
