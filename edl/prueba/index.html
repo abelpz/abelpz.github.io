@@ -735,10 +735,14 @@ var MQ = MathQuill.getInterface(2);
 	var questionID = 0;
 
 	function getQuestion(){
-		contenedor.firstChild.remove();	
-        contenedor.innerHTML = question.innerHTML;
+		contenedor.firstChild.remove();
+		if(questionInput.value == ""){
+			contenedor.innerHTML = question.innerHTML;
+		}else{
+			contenedor.innerHTML = questionInput.value;
+		} 
 		premisasIniciales = (document.querySelectorAll('.hipotesis')[0].nextElementSibling) ? true : false;
-		questionID = question.firstElementChild.getAttribute("data-id");
+		questionID = contenedor.firstElementChild.getAttribute("data-id");
 		changeTitle(questionID, appVersion);
         setFields(true);
         setJustificaciones(true);
