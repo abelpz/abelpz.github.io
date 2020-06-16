@@ -727,7 +727,7 @@
 <div class="modal-generate">
 	<div class="delete-bar">x</div>
 	<div class="content">
-		<label for="link"><strong> Ingrese el enlace a la aplicación:</strong></label>
+		<label for="link"><strong> Ingrese el id del archivo edl alojado en M7:</strong></label>
 		<input id="link" name="link" type="text">
 		<button>Generar código</button>
 		<hr>
@@ -785,13 +785,7 @@ var MQ = MathQuill.getInterface(2);
 
 	document.addEventListener("click", ()=>{
 		activeElement = document.activeElement;
-	})
-
-
-
-
-	
-	
+	});
 
 	var teclado = document.querySelector(".keyboard");
 
@@ -1843,7 +1837,7 @@ var MQ = MathQuill.getInterface(2);
 						
 					let appIframe = document.createElement("iframe");
 						appIframe.setAttribute("id", fileName);
-						appIframe.setAttribute("src", modalInput.value);
+						appIframe.setAttribute("src", "https://m7.ucab.edu.ve/files/"+ modalInput.value +"/download?inline=1");
 						appIframe.style.width = "100%";
 						appIframe.style.height = "100vh";
 
@@ -1861,7 +1855,6 @@ var MQ = MathQuill.getInterface(2);
 
 				}
 			});
-
 	}
 	//Principal
 	
@@ -1902,5 +1895,3 @@ var MQ = MathQuill.getInterface(2);
 </script>
 </body>
 </html>
-
-
