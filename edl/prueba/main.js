@@ -19,6 +19,7 @@ var redoButton = document.getElementById('redo');
 var memory = [{'contenedor' : contenedor.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow}];
 var cursor = 0;
 var activeElement;
+var firstLoad = true;
 
 var desarrollo = contenedor.getElementsByClassName('desarrollo');
     desarrollo[0].setAttribute('data-version', appVersion);
@@ -112,7 +113,8 @@ botonClaro.addEventListener('click', (e)=>{
 
 function saveToMemory(){		
     functionTitle("saveToMemory");
-    if(canSave)
+    
+    if(canSave && !firstLoad)
     {
         canSave = false;
         setTimeout(()=>
@@ -143,11 +145,12 @@ function saveToMemory(){
                 conclusion.innerHTML = latex;
             memory.push({'contenedor' : clone.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow});
             cursor++;
-            if(questionInput) questionInput.value = clone.innerHTML;
+            questionInput.value = clone.innerHTML;
             if(testingMode) console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
             canSave = true;
         }, 300);
     }
+    firstLoad = false;
 }
 
 function undo(){
@@ -923,7 +926,9 @@ function moverAb(){
 
 function moverAr(){
     let selected = selectedBox.__controller.container[0];
-    if( selectedRow > 1){
+    let firstRow = parseInt(contenedor.querySelector(".hipotesis.iniciales").lastElementChild.querySelector(".fila-label").textContent);
+    
+    if( selectedRow > firstRow){
         selectedRow--;
         if( selected.classList.contains("justificacion") ){
         
@@ -974,7 +979,7 @@ function batchAddDelete(fromRow = 1, clean = false){
 
 //Manejo de archivos
 
-function download() {
+/* function download() {
     functionTitle("download");
     let fileSaveName = fileName;
     let clone = contenedor.cloneNode(true);
@@ -1018,9 +1023,9 @@ function open(){
     if (abrirInput) {
         abrirInput.click();
       }
-}
+} */
 
-function handleFile(file){
+/* function handleFile(file){
     functionTitle("handleFile");
     var reader = new FileReader();
        reader.readAsText(file[0], "UTF-8");
@@ -1046,4 +1051,4 @@ function handleFile(file){
     reader.onerror = function (e) {
         alert("Error leyendo el archivo");
     }
-}
+} */
