@@ -143,7 +143,7 @@ function saveToMemory(){
                 conclusion.innerHTML = latex;
             memory.push({'contenedor' : clone.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow});
             cursor++;
-            questionInput.value = clone.innerHTML;
+            if(questionInput) questionInput.value = clone.innerHTML;
             if(testingMode) console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
             canSave = true;
         }, 300);
