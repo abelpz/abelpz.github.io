@@ -16,7 +16,7 @@ var contenedor = document.querySelector('.pantalla .contenedor');
 
 var undoButton = document.getElementById('undo');
 var redoButton = document.getElementById('redo');
-var memory = [{'contenedor' : contenedor.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow}];
+var memory;
 var cursor = 0;
 var activeElement;
 var firstLoad = true;
@@ -113,8 +113,13 @@ botonClaro.addEventListener('click', (e)=>{
 
 function saveToMemory(){		
     functionTitle("saveToMemory");
-    
-    if(canSave && !firstLoad)
+
+    if(firstLoad)
+    {
+        memory = [{'contenedor' : contenedor.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow}];
+        firstLoad = false;
+    }
+    else if(canSave)
     {
         canSave = false;
         setTimeout(()=>
@@ -150,7 +155,6 @@ function saveToMemory(){
             canSave = true;
         }, 300);
     }
-    firstLoad = false;
 }
 
 function undo(){
