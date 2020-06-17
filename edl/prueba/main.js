@@ -16,7 +16,7 @@ var contenedor = document.querySelector('.pantalla .contenedor');
 
 var undoButton = document.getElementById('undo');
 var redoButton = document.getElementById('redo');
-var memory;
+var memory = [];
 var cursor = 0;
 var activeElement;
 var firstLoad = true;
@@ -114,12 +114,8 @@ botonClaro.addEventListener('click', (e)=>{
 function saveToMemory(){		
     functionTitle("saveToMemory");
 
-    if(firstLoad)
-    {
-        memory = [{'contenedor' : contenedor.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow}];
-        firstLoad = false;
-    }
-    else if(canSave)
+ 
+    if(canSave)
     {
         canSave = false;
         setTimeout(()=>
