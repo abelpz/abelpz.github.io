@@ -711,6 +711,7 @@
 </section>
 <footer><span>*Atajos con alt + tecla</span><span style="float:right;"> Creado por <a target="_blank" href="https://github.com/abelpz/EDL">Abel Pérez</a></span></footer>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
 <script src="https://abelpz.github.io/edl/lib/mathquill/mathquill.js"></script>
 <script src="https://abelpz.github.io/edl/lib/testing/testing.js"></script>
 
@@ -724,6 +725,9 @@ var MQ = MathQuill.getInterface(2);
 
 	//Principal
 	var question = window.frameElement.parentElement.previousElementSibling;
+	testOut("Probando question", question);
+	testOut("Probando hipotesis iniciales", question.querySelector(".hipotesis.iniciales"));
+	
 	let answer = question.querySelector(".hipotesis.iniciales").nextElementSibling;
 		if (!answer.querySelector(".proposicion")){
 			answer.innerHTML = answer.innerHTML + '<span class="proposicion" data-fila="'+ answer.querySelector(".fila-label").innerHTML +'"> </span><span class="justificacion"> </span>';
@@ -734,7 +738,7 @@ var MQ = MathQuill.getInterface(2);
 
 	function getQuestion(){
 		contenedor.firstChild.remove();
-		if(questionInput.value == ""){
+		if(!questionInput || questionInput.value == ""){
 			contenedor.innerHTML = question.innerHTML;
 		}else{
 			contenedor.innerHTML = questionInput.value;
@@ -742,6 +746,9 @@ var MQ = MathQuill.getInterface(2);
 		premisasIniciales = (document.querySelectorAll('.hipotesis')[0].nextElementSibling) ? true : false;
 		questionID = contenedor.firstElementChild.getAttribute("data-id");
 		changeTitle(questionID, appVersion);
+		contenedor.querySelectorAll('.proposicion').forEach( (item,i)=>{
+			item.setAttribute('data-fila', (i+1));
+		});
         setFields(true);
         setJustificaciones(true);
 		setConclusion();
@@ -750,7 +757,7 @@ var MQ = MathQuill.getInterface(2);
 	}
 
 	function initEDL(){
-		questionInput.style.display = "none";
+		if(questionInput) questionInput.style.display = "none";
 		changeTitle(fileName, appVersion);
 		setTimeout(() => {
 		introScreen.classList.add("fade-out");
