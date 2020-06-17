@@ -120,8 +120,11 @@ function saveToMemory(){
         canSave = false;
         setTimeout(()=>
         {
-            undoButton.classList.remove("disabled");
-            redoButton.classList.add("disabled");
+            if(!firstLoad){
+                undoButton.classList.remove("disabled");
+                redoButton.classList.add("disabled");
+            }firstLoad = true;
+                 
             if (cursor < parseInt(parseInt(memory.length-1)))
             {
                 memory = memory.slice(0,cursor+1);
