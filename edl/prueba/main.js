@@ -149,10 +149,17 @@ function saveToMemory(){
                 conclusion.innerHTML = latex;
             memory.push({'contenedor' : clone.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow});
             cursor++;
-            questionInput.innerText = clone.innerHTML;
+            saveAnswer(clone);
             if(testingMode) console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
             canSave = true;
         }, 300);
+    }
+
+    function saveAnswer(clone) {
+        if (questionInput)
+            questionInput.innerText = clone.innerHTML;
+        else
+            console.log("'0'");
     }
 }
 
