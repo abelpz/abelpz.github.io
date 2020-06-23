@@ -149,17 +149,17 @@ function saveToMemory(){
                 conclusion.innerHTML = latex;
             memory.push({'contenedor' : clone.innerHTML, 'premisasIniciales' : premisasIniciales, 'selectedRow' : selectedRow});
             cursor++;
-            saveAnswer(clone);
+            saveAnswer(clone.innerHTML);
             if(testingMode) console.log(cursor + ' de ' + parseInt(parseInt(memory.length-1)));
             canSave = true;
         }, 300);
     }
 
-    function saveAnswer(clone) {
-        if (questionInput)
-            questionInput.innerText = clone.innerHTML;
+    function saveAnswer(curr) {
+        if(!saveToIframe(curr) && questionInput)
+            questionInput.innerText = curr;
         else
-            console.log("'0'");
+            console.log("No existe questionInput");
     }
 }
 
