@@ -156,9 +156,10 @@ function saveToMemory(){
     }
 
     function saveAnswer(curr) {
-        if(!saveToIframe(curr) && questionInput)
-            questionInput.innerText = curr;
-        else
+        if(!saveToIframe(curr) && questionInput){
+            console.log("guardando en textarea...");
+            questionInput.innerText = escape(curr);
+        }else
             console.log("No existe questionInput");
     }
 }
